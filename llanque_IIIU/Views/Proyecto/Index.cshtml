@@ -1,0 +1,111 @@
+﻿@using llanque_IIIU.Models;
+@using llanque_IIIU.Controllers;
+
+@{
+    ViewBag.Title = "Proyectos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    USUARIO usuario = LoginController.usuarioLogeado;
+    List<PROYECTO> proyectos = ViewBag.proyectos;
+    bool muestra = usuario.NIVEL != "ESTUDIANTE";
+}
+
+<h2><center>Proyectos</center></h2>
+
+<div class="row">
+    <div class="col-10"></div>
+    <div class="col-2">
+
+@if (!usuario.NIVEL.Equals("ESTUDIANTE"))
+{
+    @Html.ActionLink("Crear nuevo proyecto", "AgregarEditar", "Proyecto", null, new { @class = "btn btn-success" })
+}
+    </div>
+</div>
+<br /><br />
+@if (ViewBag.Message == "error")
+{
+    <div class="alert alert-danger" >
+        Error al crear Proyecto
+    </div>
+}
+@if (ViewBag.Message == "success")
+{
+    <div class="alert alert-info"  >
+        Proyecto creado
+    </div>
+}
+
+<div class="row" ">
+    <div class="col-12 table-responsive mt-1 mx-auto">
+        <table id="table" class="table table-striped align-middle">
+            <caption>Lista de Proyectos</caption>
+            <thead style="text-align: center;">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nombre Linea</th>
+                    <th scope="col">Apellidos y Nombres del docente</th>
+                    <th scope="col">Nombre de Proyecto</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acción</th>
+
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle; text-align: center;">
+
+                @foreach (var proyecto in proyectos)
+                {
+                    <tr>
+                        <td>@proyecto.ID_PROYECTO</td>
+                        <td class="text-start">@proyecto.LINEA_INVESTIGACION.NOMBRE</td>
+                        <td>@proyecto.USUARIO.PERSONA.APELLIDOS, @proyecto.USUARIO.PERSONA.NOMBRES</td>
+                        <td>@proyecto.NOMBRE</td>
+                        <td>@proyecto.DESCRIPCION</td>
+                        <td>
+                            @if (proyecto.ESTADO.Equals("1"))
+                            {
+                                <span class="text-success" style="color:white">Disponible</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger" style="color:white">Ocupado</span>
+                            }
+                        </td>
+                        <td>
+                            @if (muestra)
+                            {
+                                <a href="~/Proyecto/AgregarEditar?cod=@proyecto.ID_PROYECTO" class="btn btn-sm btn-warning">
+                                   Modificar
+                                </a>
+                                <a href="~/Proyecto/Eliminar?cod=@proyecto.ID_PROYECTO" class="btn btn-sm btn-danger">
+                                    Eliminar
+                                </a>
+                            }
+                            else
+                            {
+                                string clase = "";
+                                clase = (proyecto.ESTADO.Equals("1")) ? " " : "disabled";
+
+                                <a href="~/Proyecto/AgregarMiembro?cod=@proyecto.ID_PROYECTO&user=@usuario.PERSONA.ID_PERSONA" class="btn btn-sm btn-dark @clase">
+                                    Unirme
+                                </a>
+                            }
+                            @if (usuario.NIVEL.Equals("DOCENTE"))
+                            {
+                                <a href="~/Proyecto/DetalleProyecto?cod=@proyecto.ID_PROYECTO" class="btn btn-sm btn-primary">
+                                    Visualizar
+                                </a>
+                            }
+                        </td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,31 @@
+﻿@using llanque_IIIU.Models;
+@model Login
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-lg-5 col-md-10 col-sm-12 mx-auto">
+    <h1 class="text-muted text-center mb-3">WEB III</h1>
+    @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+    {
+        if (ViewBag.error == "error")
+        {
+            <div class="alert alert-warning">
+                Datos incorrectos
+            </div>
+        }
+        <div class="form-floating mb-3">
+            @Html.TextBoxFor(model => model.usuario, null, new { @class = "form-control", @placeholder = "Usuario", @required = "required", @maxlength = "50", @type = "text" })
+            @Html.LabelFor(model => model.usuario)
+            @Html.ValidationMessageFor(model => model.usuario, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-floating mb-3">
+            @Html.TextBoxFor(model => model.clave, null, new { @class = "form-control", @placeholder = "Clave", @required = "required", @maxlength = "50", @type = "password" })
+            @Html.LabelFor(model => model.clave)
+            @Html.ValidationMessageFor(model => model.clave, null, new { @class = "text-danger" })
+        </div>
+        @*<input name="login" id="login" class="btn btn-block login-btn mb-4" type="button" value="Iniciar Sesión">*@
+        <button type="submit" class="btn btn-success d-block mx-auto btn-lg">Iniciar Sesión</button>
+    }
+</div>

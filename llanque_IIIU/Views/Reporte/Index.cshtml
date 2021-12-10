@@ -1,0 +1,120 @@
+﻿@using llanque_IIIU.Models;
+@model List<LINEA_INVESTIGACION>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    double totalProyectos = ViewBag.TotalProyectos;
+    string chartObject = ViewBag.chartObject;
+
+    string contenido = "";
+    string categoria = "";
+    int valor = 0;
+}
+
+<h2>Reporte</h2>
+
+<div class="row">
+    <div class="col-12 table-responsive mt-2 mx-auto">
+        <table class="table table-striped align-middle">
+            <caption>Reporte por linea de investigación</caption>
+            <thead style="text-align: center;">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nombre de Linea</th>
+                    <th scope="col">Cantidad de Proyectos</th>
+                    <th scope="col">Porcentaje</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle; text-align: center;">
+                @foreach (var linea in Model)
+                {
+
+                    categoria = linea.NOMBRE;
+                    valor = linea.PROYECTO.Count;
+
+                    contenido = contenido + "{ name: " + "'" + categoria + "'," + " data:[" + valor + ",]" + "},";
+                    <tr>
+                        <td>@linea.ID_LINEA</td>
+                        <td class="text-start">@linea.NOMBRE</td>
+                        <td>@linea.PROYECTO.Count</td>
+                        @{
+                            double totalProyecto = linea.PROYECTO.Count;
+                            double porcentaje = Math.Round(totalProyecto * 100 / totalProyectos, 2);
+                        }
+                        <td>@porcentaje%</td>
+                    </tr>
+                }
+                <tr>
+                    <td> </td>
+                    <th>Total</th>
+                    <th>@totalProyectos</th>
+                    <th>100%</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-12 mt-2 mx-auto">
+        <figure class="highcharts-figure">
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+        </figure>
+        <script type="text/javascript">
+        $ (function() {
+
+            $(document).ready(function () {
+
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Reporte de proyectos'
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: [
+                            'Categorias'
+
+                        ],
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Cantidad'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    series: [
+                        @Html.Raw(contenido)
+
+                    ]
+                });
+
+            });
+        });
+
+
+        </script>
+
+    </div>
+</div>

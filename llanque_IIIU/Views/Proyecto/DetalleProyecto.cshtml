@@ -1,0 +1,68 @@
+﻿@using llanque_IIIU.Models;
+@using llanque_IIIU.Controllers;
+@model PERSONA_PROYECTO
+@{
+    ViewBag.Title = "DetalleProyecto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PERSONA persona = ViewBag.Persona;
+    PROYECTO proyecto = ViewBag.Proyecto;
+    List<SelectListItem> estudiantes = ViewBag.Estudiantes;
+    List<PERSONA_PROYECTO> miembros = ViewBag.Miembros;
+    bool isFull = miembros.Count >= 2 ? true : false;
+    Model.ID_PROYECTO = proyecto.ID_PROYECTO;
+}
+<p class="text-muted"><small>@proyecto.LINEA_INVESTIGACION.NOMBRE</small></p>
+<h2>@proyecto.NOMBRE</h2>
+<p style="text-align:justify">@proyecto.DESCRIPCION</p>
+
+
+@if (LoginController.usuarioLogeado.NIVEL.Equals("ESTUDIANTE") && !isFull)
+{
+    using (Html.BeginForm("AgregarMiembroAProyecto", "Proyecto", FormMethod.Post, new { critero = "frm-actualizar", @class = "ml-3" }))
+    {
+        @Html.HiddenFor(m => m.ID_PROYECTO)
+        <div class="form-group row mt-3">
+            <label for="colFormLabel" class="col-sm-3 col-form-label">Seleccione miembro</label>
+            <div class="col-sm-7">
+                @Html.DropDownListFor(x => x.ID_PERSONA, estudiantes, new { @class = "form-select", @required = "required" })
+                @Html.ValidationMessageFor(x => x.ID_PERSONA, null, new { @class = "label label-danger" })
+            </div>
+            <input type="submit" value="Agregar" class="btn btn-primary col-sm-2" />
+        </div>
+    }
+}
+<hr />
+<h6>Miembros</h6>
+<div class="row">
+    <div class="col-12 table-responsive mt-2 mx-auto">
+        <table class="table table-striped align-middle">
+            <caption>Lista de miembros del proyecto</caption>
+            <thead style="text-align: center;">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Apellidos y Nombres</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle; text-align: center;">
+                @foreach (var usuario in miembros)
+                {
+                    <tr>
+                        <td>@usuario.PERSONA.ID_PERSONA</td>
+                        <td class="text-start">@usuario.PERSONA.APELLIDOS, @usuario.PERSONA.NOMBRES</td>
+                        <td>@usuario.PERSONA.USUARIO.First().USUARIO1</td>
+                        <td>
+                            @if (usuario.ID_PERSONA == LoginController.usuarioLogeado.PERSONA.ID_PERSONA)
+                            {
+                                <a href="~/Proyecto/SalirProyecto?cod=@usuario.ID_PERSONA_PROYECTO" class="btn btn-sm btn-danger">
+                                    Salir
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

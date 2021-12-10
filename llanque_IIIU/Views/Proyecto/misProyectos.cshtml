@@ -1,0 +1,48 @@
+﻿@using llanque_IIIU.Models;
+@model List<PROYECTO>
+@{
+    ViewBag.Title = "misProyectos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Mis Proyectos</h2>
+<div class="row">
+    <div class="col-12 table-responsive mt-2 mx-auto">
+        <table id="table" class="table table-striped align-middle">
+            <caption>Lista de Proyectos</caption>
+            <thead style="text-align: center;">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nombre Linea</th>
+                    <th scope="col">Apellidos y Nombres del docente</th>
+                    <th scope="col">Nombre de Proyecto</th>
+                    <th scope="col">Acción</th>
+
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle; text-align: center;">
+
+                @foreach (var proyecto in Model)
+                {
+                    <tr>
+                        <td>@proyecto.ID_PROYECTO</td>
+                        <td class="text-start">@proyecto.LINEA_INVESTIGACION.NOMBRE</td>
+                        <td>@proyecto.USUARIO.PERSONA.APELLIDOS, @proyecto.USUARIO.PERSONA.NOMBRES</td>
+                        <td>@proyecto.NOMBRE</td>
+                        <td>
+
+
+                            <a href="~/Proyecto/DetalleProyecto?cod=@proyecto.ID_PROYECTO" class="btn btn-sm btn-success">
+                                Visualizar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

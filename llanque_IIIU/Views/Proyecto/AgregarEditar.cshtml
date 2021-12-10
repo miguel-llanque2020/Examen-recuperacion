@@ -1,0 +1,80 @@
+﻿@using llanque_IIIU.Models;
+@using llanque_IIIU.Controllers;
+
+@model PROYECTO
+@{
+    ViewBag.Title = "AgregarEditar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> docentes = ViewBag.Docentes;
+    List<SelectListItem> lineas = ViewBag.Lineas;
+    USUARIO usuario = LoginController.usuarioLogeado;
+    if (usuario.NIVEL.Equals("DOCENTE"))
+    {
+        Model.ID_USUARIO = usuario.ID_USUARIO;
+    }
+}
+
+
+<h2>
+    @if (Model.ID_PROYECTO == 0)
+    {
+        @Html.Raw("Agregar");
+    }
+    else
+    {
+        @Html.Raw("Editar");
+    }
+</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="~/Proyecto/Index">Proyectos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@(Model.ID_PROYECTO != 0 ? "Proyecto "+ Model.NOMBRE : "Nuevo proyecto")</li>
+    </ol>
+</nav>
+
+@using (Html.BeginForm("Guardar", "Proyecto", FormMethod.Post, new { critero = "frm-actualizar", @class = "ml-3" }))
+{
+    @Html.HiddenFor(m => m.ID_PROYECTO)
+    <div class="form-group row">
+        <label for="colFormLabel" class="col-sm-4 col-form-label">Nombre de Proyecto</label>
+        <div class="col-sm-8">
+            @Html.TextBoxFor(x => x.NOMBRE, new { @class = "form-control", placeholder = "Ingrese nombre de proyecto" })
+            @Html.ValidationMessageFor(x => x.NOMBRE, null, new { @class = "label label-danger" })
+        </div>
+    </div>
+    <div class="form-group row mt-3">
+        <label for="colFormLabel" class="col-sm-4 col-form-label">Descripción de Proyecto</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(x => x.DESCRIPCION, new { @class = "form-control", placeholder = "Ingrese descripción de proyecto", @maxlength = "255" })
+            @Html.ValidationMessageFor(x => x.DESCRIPCION, null, new { @class = "label label-danger" })
+        </div>
+    </div>
+    <div class="form-group row mt-3">
+        <label for="colFormLabel" class="col-sm-4 col-form-label">Seleccione docente</label>
+        <div class="col-sm-8">
+            @if (usuario.NIVEL.Equals("DOCENTE"))
+            {
+                @Html.HiddenFor(m => m.ID_USUARIO)
+                <input type="text" value="@usuario.PERSONA.APELLIDOS, @usuario.PERSONA.NOMBRES" class="form-control" disabled />
+            }
+            else
+            {
+                @Html.DropDownListFor(x => x.ID_USUARIO, docentes, new { @class = "form-select", @required = "required" })
+                @Html.ValidationMessageFor(x => x.ID_USUARIO, null, new { @class = "label label-danger" })
+            }
+        </div>
+    </div>
+    <div class="form-group row mt-3">
+        <label for="colFormLabel" class="col-sm-4 col-form-label">Seleccione linea de investigación</label>
+        <div class="col-sm-8">
+            @Html.DropDownListFor(x => x.ID_LINEA, lineas, new { @class = "form-select", @required = "required" })
+            @Html.ValidationMessageFor(x => x.ID_LINEA, null, new { @class = "label label-danger" })
+        </div>
+    </div>
+
+    <div class="form-group mt-3 col-lg-3 col-md-7 col-sm-11 mx-auto">
+        <input type="submit" value="Guardar" class="btn btn-success" />
+        <a href="~/Proyecto" class="btn btn-danger">Cancelar</a>
+    </div>
+}
+

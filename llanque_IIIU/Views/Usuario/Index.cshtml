@@ -1,0 +1,42 @@
+﻿@using llanque_IIIU.Models;
+@model List<USUARIO>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Usuarios</h2>
+
+<div class="row">
+    <div class="col-12 table-responsive mt-2 mx-auto">
+        <table id="table" class="table table-striped align-middle">
+            <caption>Lista de Proyectos</caption>
+            <thead style="text-align: center;">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Apellidos y Nombres</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Tipo</th>
+                </tr>
+            </thead>
+            <tbody style="vertical-align:middle; text-align: center;">
+
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.ID_USUARIO</td>
+                        <td class="text-start">@usuario.PERSONA.APELLIDOS, @usuario.PERSONA.NOMBRES</td>
+                        <td>@usuario.USUARIO1</td>
+                        <td>@usuario.PERSONA.EMAIL</td>
+                        <td>@usuario.NIVEL</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
